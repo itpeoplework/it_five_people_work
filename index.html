@@ -16,7 +16,7 @@
             text-align: center;
         }
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 20px auto;
             padding: 20px;
             background: #fff;
@@ -51,88 +51,488 @@
             font-size: 0.95rem;
             color: #333;
         }
+
+        /* new styles for layouts and previews */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items:start; }
+        .gallery { display: grid; grid-template-columns: repeat(auto-fill,minmax(120px,1fr)); gap:10px; }
+        .thumb { width:100%; height:100px; object-fit:cover; border-radius:4px; display:block; }
+        .file-item { display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid #eee;}
+        .centered { text-align:center; }
+        .timeline { border-left:2px solid #eee; padding-left:12px; }
+        .meta { font-size:0.9rem; color:#666; margin-top:6px; }
+        .upload-row { margin-top:12px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+        .remove-btn { background:#c0392b; padding:6px 8px; border-radius:4px; color:#fff; border:none; cursor:pointer; }
+        @media(max-width:720px) { .two-col { grid-template-columns: 1fr; } }
+
+        /* Presentation overlay styles */
+        #presentationOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            color: #fff;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        #presentationOverlay.active { display: flex; }
+        .slide-wrap { max-width: 1200px; width: 92%; height: 88%; background: transparent; display:flex; flex-direction:column; }
+        .slide-content { flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:30px; gap:18px; }
+        .slide-content h1 { font-size: clamp(28px, 5vw, 56px); margin:0; }
+        .slide-content p { font-size: clamp(16px, 2.2vw, 26px); line-height:1.3; max-width:1100px; }
+        .slide-files { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:8px; }
+        .slide-files img { max-height:320px; max-width:45vw; object-fit:cover; border-radius:6px; }
+
+        .pres-controls { display:flex; gap:10px; justify-content:center; margin-top:14px; }
+        .pres-counter { color:#ccc; font-size:0.95rem; margin-left:12px; align-self:center; }
+        .pres-btn { padding:10px 14px; border-radius:6px; border:none; cursor:pointer; background:#222; color:#fff; opacity:0.95; }
+        .pres-btn:hover { opacity:1; }
+        .pres-topbar { position:absolute; left:18px; top:18px; color:#fff; font-weight:600; }
     </style>
 <script src="https://puc.poecdn.net/authenticated_preview_page/syncedState.3f7572448765332f3047.js"></script></head>
 <body>
 
 <header>
-    <h1>IVE DVE YC 'Cyber Science' For FS113371</h1>
+    <h1>IVE DVE YC 'Cyber Science' For FS113371 / B1A
+        
+    </h1>
 </header>
 
 <div class="container" id="app">
-    <!-- dynamic page content will be injected here -->
     <h2 id="page-title">Page 1: Introduction</h2>
-    <div id="page-content">
-        <p>Write about yourself here. Include your name, age, interests, and any other relevant information.</p>
-        <p><em>Write For HTML</em></p>
+
+    <!-- display area: rendered per page and changed by JS -->
+    <div id="page-display">
+        <p></p>
+        <p></p>
+        <p><em></em></p>
+    </div>
+
+    <!-- persistent interaction area — not replaced when rendering content -->
+    <div id="interaction-area">
+        <label for="supportInput" style="display:block;margin-top:12px;font-weight:600;">
+            The People introduce Myself
+        </label>
+        <!-- unlimited text area (no maxlength) -->
+        <textarea id="supportInput" rows="6" style="width:100%;padding:8px;border-radius:4px;border:1px solid #ccc;" placeholder="introduce Myself"></textarea>
+
+        <div class="upload-row">
+            <input id="fileInput" type="file" multiple accept="image/*,.pdf,.doc,.docx,.txt,.ppt,.pptx,.xls,.xlsx" />
+            <button class="btn" id="saveNoteBtn" type="button">Save</button>
+            <!-- insert long sample text quickly -->
+            <button class="btn" id="insertLongBtn" type="button" title="Insert long sample introduction">Insert long text</button>
+        </div>
+
+        <div id="previews" style="margin-top:12px;"></div>
     </div>
 
     <div class="controls">
-        <div class="page-indicator" id="page-indicator">Page 1 of 10</div>
-        <div style="margin-left:auto;">
-            <button class="btn" id="nextBtn">Next Page</button>
+        <div>
+            <button class="btn" id="prevBtn">Prev</button>
+            <button class="btn" id="nextBtn">Next</button>
+            <!-- Presentation button -->
+            <button class="btn" id="presentBtn" title="Start Presentation">Presentation</button>
+            <label style="margin-left:8px;color:#333;font-weight:600;">
+                <input id="autoplayCheckbox" type="checkbox" style="vertical-align:middle;margin-right:6px;"> Auto-play
+            </label>
         </div>
+        <div class="page-indicator" id="page-indicator">Page 1 of 10</div>
     </div>
 </div>
 
 <button class="btn" id="topBtn" title="Back to top">Back to Top</button>
 
+<!-- presentation overlay (PowerPoint-like slide view) -->
+<div id="presentationOverlay" aria-hidden="true">
+    <div class="slide-wrap" role="dialog" aria-modal="true" aria-label="Presentation view">
+        <div class="pres-topbar" id="presTitle">Presentation</div>
+        <div class="slide-content" id="slideContent">
+            <!-- slide content injected by JS -->
+            <h1></h1>
+            <p></p>
+            <div class="slide-files" id="slideFiles"></div>
+        </div>
+        <div class="pres-controls">
+            <button class="pres-btn" id="presPrev">Prev</button>
+            <button class="pres-btn" id="presPlay">Play</button>
+            <button class="pres-btn" id="presNext">Next</button>
+            <button class="pres-btn" id="presExit">Exit</button>
+            <div class="pres-counter" id="presCounter">1 / 10</div>
+        </div>
+    </div>
+</div>
+
 <script>
     (function(){
-        const pages = [];
-        // Build 10 pages: 5 people × 2 pages each
+        const STORAGE_KEY = 'project_pages_v1';
+        const defaultPages = [];
         for (let person = 1; person <= 5; person++) {
             for (let p = 1; p <= 2; p++) {
-                pages.push({
+                defaultPages.push({
                     title: `Person ${person} — Page ${p}`,
                     content: [
-                        `Write about yourself here. Include your name, age, interests, and any other relevant information.`,
-                        `This is person ${person}, page ${p}.`,
-                        `Write For HTML`
-                    ].join('\n\n')
+                       
+                    ].join('\n\n'),
+                    note: '',
+                    files: [] // {name,type,dataURL,ts}
                 });
             }
         }
 
+        // load stored pages if exists and ensure length=10
+        function loadPagesFromStorage() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (!raw) return defaultPages.slice();
+                const parsed = JSON.parse(raw);
+                if (!Array.isArray(parsed)) return defaultPages.slice();
+                // ensure exactly 10 pages: fill or truncate
+                const pages = defaultPages.slice();
+                for (let i = 0; i < Math.min(parsed.length, 10); i++) {
+                    pages[i] = Object.assign(pages[i], parsed[i]);
+                    pages[i].files = parsed[i].files || [];
+                }
+                return pages;
+            } catch (e) {
+                console.warn('Failed to load pages', e);
+                return defaultPages.slice();
+            }
+        }
+        function savePagesToStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(pages));
+            } catch (e) {
+                console.warn('Failed to save pages', e);
+            }
+        }
+
+        let pages = loadPagesFromStorage();
         let current = 0;
         const total = pages.length;
+
         const titleEl = document.getElementById('page-title');
-        const contentEl = document.getElementById('page-content');
+        const displayEl = document.getElementById('page-display');
         const indicator = document.getElementById('page-indicator');
         const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
         const topBtn = document.getElementById('topBtn');
+        const supportInput = document.getElementById('supportInput');
+        const fileInput = document.getElementById('fileInput');
+        const previews = document.getElementById('previews');
+        const saveNoteBtn = document.getElementById('saveNoteBtn');
+        const insertLongBtn = document.getElementById('insertLongBtn');
         const app = document.getElementById('app');
+        // long sample text (replace with your preferred long introduction)
+        const longSampleText = `Hello, my name is [Name]. I am [age] years old and my interests include computer science, coding, troubleshooting, research, digital communication, and creative projects. I use computers and digital tools every day to study, collaborate, and support others. I have experience with various software, document formats, image editing, and online presentation tools. I enjoy learning new technologies and applying them to solve problems and build useful systems. This long text is provided so you can quickly fill the introduction area for testing or demonstration purposes. Feel free to edit any part of it to reflect your personal details.`;
+
+        // insert/append long sample text into textarea
+        if (insertLongBtn) {
+            insertLongBtn.addEventListener('click', () => {
+                const current = supportInput.value || '';
+                // append with spacing if there is existing text
+                supportInput.value = current ? (current + '\n\n' + longSampleText) : longSampleText;
+                // small visual feedback
+                insertLongBtn.textContent = 'Inserted';
+                setTimeout(()=> insertLongBtn.textContent = 'Insert long text', 900);
+            });
+        }
+
+        // --- Presentation mode additions ---
+        const presentBtn = document.getElementById('presentBtn');
+        const autoplayCheckbox = document.getElementById('autoplayCheckbox');
+        const overlay = document.getElementById('presentationOverlay');
+        const slideContent = document.getElementById('slideContent');
+        const slideFiles = document.getElementById('slideFiles');
+        const presPrev = document.getElementById('presPrev');
+        const presNext = document.getElementById('presNext');
+        const presExit = document.getElementById('presExit');
+        const presPlay = document.getElementById('presPlay');
+        const presCounter = document.getElementById('presCounter');
+        let presActive = false;
+        let presIndex = 0;
+        let presInterval = null;
+
+        // helper to create file preview node
+        function createFileNode(fileObj, idx) {
+            const div = document.createElement('div');
+            div.className = 'file-item';
+            if (fileObj.type && fileObj.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.src = fileObj.dataURL;
+                img.className = 'thumb';
+                div.appendChild(img);
+            } else {
+                const ico = document.createElement('div');
+                ico.style.minWidth='40px';
+                ico.style.minHeight='40px';
+                ico.style.display='flex';
+                ico.style.alignItems='center';
+                ico.style.justifyContent='center';
+                ico.style.background='#efefef';
+                ico.style.borderRadius='4px';
+                ico.textContent = fileObj.name.split('.').pop().toUpperCase();
+                div.appendChild(ico);
+            }
+            const meta = document.createElement('div');
+            meta.style.flex='1';
+            meta.innerHTML = `<div><strong>${escapeHtml(fileObj.name)}</strong></div><div class="meta">${fileObj.type || 'file'} • ${(new Date(fileObj.ts)).toLocaleString()}</div>`;
+            div.appendChild(meta);
+
+            const actions = document.createElement('div');
+            const dl = document.createElement('a');
+            dl.href = fileObj.dataURL;
+            dl.download = fileObj.name;
+            dl.textContent = 'Download';
+            dl.className = 'btn';
+            dl.style.marginRight='8px';
+            actions.appendChild(dl);
+
+            const rm = document.createElement('button');
+            rm.className = 'remove-btn';
+            rm.textContent = 'Remove';
+            rm.addEventListener('click', () => {
+                pages[current].files.splice(idx,1);
+                savePagesToStorage();
+                render(current);
+            });
+            actions.appendChild(rm);
+            div.appendChild(actions);
+            return div;
+        }
+
+        function escapeHtml(s){ return String(s).replace(/[&<>"']/g, (m)=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+        // layout renderers
+        function renderSimple(pg) {
+            return `<div><p>${pg.content.split('\n\n').map(escapeHtml).join('</p><p>')}</p></div>`;
+        }
+        function renderTwoCol(pg, filesHtml) {
+            return `<div class="two-col"><div>${pg.content.split('\n\n').map(escapeHtml).join('<br/>')}</div><div>${filesHtml}</div></div>`;
+        }
+        function renderGallery(pg, filesHtml) {
+            return `<div><p>${escapeHtml(pg.content)}</p><div class="gallery">${filesHtml}</div></div>`;
+        }
+        function renderCentered(pg, filesHtml) {
+            return `<div class="centered"><h3>${escapeHtml(pg.title)}</h3><p>${escapeHtml(pg.content)}</p><div>${filesHtml}</div></div>`;
+        }
+        function renderTimeline(pg, filesHtml) {
+            return `<div class="timeline"><p>${escapeHtml(pg.content)}</p><div>${filesHtml}</div></div>`;
+        }
+
+        function buildFilesHtml(fileObjs) {
+            // for gallery we want image tags; for other layouts we use file list placeholders
+            return fileObjs.map((f, idx) => {
+                if (f.type && f.type.startsWith('image/')) {
+                    return `<img src="${f.dataURL}" class="thumb" alt="${escapeHtml(f.name)}">`;
+                } else {
+                    return `<div class="file-item"><strong>${escapeHtml(f.name)}</strong><div class="meta">${escapeHtml(f.type||'file')}</div></div>`;
+                }
+            }).join('');
+        }
 
         function render(idx) {
             const pg = pages[idx];
             titleEl.textContent = `${pg.title}`;
-            // simple HTML formatting for paragraphs
-            contentEl.innerHTML = pg.content.split('\n\n').map(s => `<p>${s}</p>`).join('');
             indicator.textContent = `Page ${idx+1} of ${total}`;
-            // show top button when scrolled down or always visible on content
+
+            // choose a layout variant (5 variants)
+            const variant = idx % 5;
+            const filesHtml = buildFilesHtml(pg.files || []);
+            let html = '';
+            if (variant === 0) html = renderSimple(pg);
+            else if (variant === 1) html = renderTwoCol(pg, filesHtml);
+            else if (variant === 2) html = renderGallery(pg, filesHtml);
+            else if (variant === 3) html = renderCentered(pg, filesHtml);
+            else html = renderTimeline(pg, filesHtml);
+
+            displayEl.innerHTML = html;
+
+            // load textarea note
+            supportInput.value = pg.note || '';
+
+            // render previews area (with controls)
+            previews.innerHTML = '';
+            (pg.files || []).forEach((f, i) => {
+                previews.appendChild(createFileNode(f, i));
+            });
+
+            // show top button
             topBtn.style.display = 'block';
-            // ensure focus for accessibility
             nextBtn.focus();
-            // reset scroll to top of the container for each page
             app.scrollIntoView({behavior: 'smooth', block: 'start'});
         }
 
+        // handle file input: read as dataURL and store metadata
+        fileInput.addEventListener('change', (ev) => {
+            const files = Array.from(ev.target.files || []);
+            if (!files.length) return;
+            let pending = files.length;
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    pages[current].files = pages[current].files || [];
+                    pages[current].files.push({
+                        name: file.name,
+                        type: file.type,
+                        dataURL: e.target.result,
+                        ts: Date.now()
+                    });
+                    pending--;
+                    if (pending === 0) {
+                        savePagesToStorage();
+                        render(current);
+                        fileInput.value = '';
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        // Save note explicitly
+        saveNoteBtn.addEventListener('click', () => {
+            pages[current].note = supportInput.value;
+            savePagesToStorage();
+            // quick feedback
+            const prev = saveNoteBtn.textContent;
+            saveNoteBtn.textContent = 'Saved';
+            setTimeout(()=> saveNoteBtn.textContent = prev, 900);
+        });
+
+        // navigation
         nextBtn.addEventListener('click', () => {
-            current = (current + 1) % total; // wrap around after last page
+            // autosave note before leaving
+            pages[current].note = supportInput.value;
+            current = (current + 1) % total;
+            savePagesToStorage();
+            render(current);
+        });
+        prevBtn.addEventListener('click', () => {
+            pages[current].note = supportInput.value;
+            current = (current - 1 + total) % total;
+            savePagesToStorage();
             render(current);
         });
 
-        // Back to Top functionality
+        // back to top
         topBtn.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // --- Presentation mode functions ---
+        function buildSlideFilesHtml(fileObjs) {
+            // create elements inside slideFiles rather than a string for control
+            slideFiles.innerHTML = '';
+            (fileObjs || []).forEach(f => {
+                if (f.type && f.type.startsWith('image/')) {
+                    const img = document.createElement('img');
+                    img.src = f.dataURL;
+                    img.alt = f.name;
+                    slideFiles.appendChild(img);
+                }
+            });
+        }
+
+        function renderSlide(idx) {
+            const pg = pages[idx];
+            // title: show page title or first line
+            const titleText = pg.title || `Page ${idx+1}`;
+            const bodyText = (pg.note && pg.note.trim()) ? pg.note : pg.content;
+            // inject
+            slideContent.querySelector('h1').textContent = titleText;
+            slideContent.querySelector('p').textContent = (typeof bodyText === 'string') ? bodyText : String(bodyText);
+            buildSlideFilesHtml(pg.files || []);
+            presCounter.textContent = `${idx+1} / ${total}`;
+        }
+
+        function startPresentation(startAt = current) {
+            // autosave current note
+            pages[current].note = supportInput.value;
+            savePagesToStorage();
+
+            presActive = true;
+            presIndex = startAt;
+            overlay.classList.add('active');
+            overlay.setAttribute('aria-hidden','false');
+            renderSlide(presIndex);
+            // try fullscreen for immersive effect (optional)
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(()=>{/* ignore */});
+            }
+            // auto-play if checked
+            if (autoplayCheckbox.checked) startAutoPlay();
+        }
+
+        function stopPresentation() {
+            presActive = false;
+            overlay.classList.remove('active');
+            overlay.setAttribute('aria-hidden','true');
+            stopAutoPlay();
+            if (document.fullscreenElement) {
+                document.exitFullscreen().catch(()=>{/* ignore */});
+            }
+        }
+
+        function nextSlide() {
+            presIndex = (presIndex + 1) % total;
+            renderSlide(presIndex);
+        }
+        function prevSlide() {
+            presIndex = (presIndex - 1 + total) % total;
+            renderSlide(presIndex);
+        }
+
+        function startAutoPlay() {
+            stopAutoPlay();
+            presInterval = setInterval(() => {
+                nextSlide();
+            }, 4000);
+            presPlay.textContent = 'Pause';
+        }
+        function stopAutoPlay() {
+            if (presInterval) { clearInterval(presInterval); presInterval = null; }
+            presPlay.textContent = 'Play';
+        }
+
+        // Wire presentation controls
+        presentBtn.addEventListener('click', () => {
+            if (!presActive) startPresentation(current);
+            else stopPresentation();
+        });
+        presExit.addEventListener('click', stopPresentation);
+        presNext.addEventListener('click', nextSlide);
+        presPrev.addEventListener('click', prevSlide);
+        presPlay.addEventListener('click', () => {
+            if (presInterval) stopAutoPlay(); else startAutoPlay();
+        });
+
+        // Keyboard handling while presentation is active
+        document.addEventListener('keydown', (e) => {
+            if (presActive) {
+                if (e.key === 'ArrowRight') { nextSlide(); e.preventDefault(); }
+                if (e.key === 'ArrowLeft') { prevSlide(); e.preventDefault(); }
+                if (e.key === 'Escape') { stopPresentation(); e.preventDefault(); }
+            } else {
+                // existing navigation keys when not in presentation
+                if (e.key === 'ArrowRight') nextBtn.click();
+                if (e.key === 'ArrowLeft') prevBtn.click();
+            }
+        });
+
+        // Ensure when overlay enters/exits fullscreen, we keep state consistent
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement && presActive) {
+                // if user exited fullscreen but overlay still active, keep overlay visible
+                // no action required; presentation continues
+            }
         });
 
         // initial render
         render(current);
 
-        // Optional: allow Left/Right arrow navigation
+        // keyboard navigation
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight') { nextBtn.click(); }
+            if (e.key === 'ArrowRight') nextBtn.click();
+            if (e.key === 'ArrowLeft') prevBtn.click();
         });
     })();
 </script>
