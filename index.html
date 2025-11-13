@@ -1,105 +1,390 @@
-<!DOCTYPE html><html lang="en"><head><meta name="x-poe-datastore-behavior" content="local_only"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;"><meta name="x-poe-datastore-behavior" content="local_only"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+<!DOCTYPE html><html lang="en"><head><meta name="x-poe-datastore-behavior" content="local_only"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IVE DVE YC 'Cyber Science' For FS113371</title>
     <style>
+        :root {
+            --primary: #0a0a1f;
+            --secondary: #121233;
+            --accent: #00f0ff;
+            --accent-dark: #0088cc;
+            --text: #e0e0ff;
+            --text-secondary: #a0a0cc;
+            --card-bg: rgba(18, 18, 51, 0.7);
+            --glow: 0 0 10px rgba(0, 240, 255, 0.7);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-	font-family: Arial, sans-serif;
-	margin: 0;
-	padding: 0;
-	background-color: #3B3636; /* darker grey background as requested */
-	color: #160606;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--primary);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 240, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 136, 204, 0.1) 0%, transparent 20%);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
         }
+        
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
         header {
-	background: #333;
-	color: #FFFFFF;
-	padding: 10px 20px;
-	text-align: center;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            color: var(--text);
+            padding: 2rem 1rem;
+            text-align: center;
+            border-bottom: 2px solid var(--accent);
+            box-shadow: var(--glow);
+            position: relative;
+            overflow: hidden;
         }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.1), transparent);
+            animation: scan 3s linear infinite;
+        }
+        
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 10px var(--accent);
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        
+        .team {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .team-member {
+            background: var(--card-bg);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border: 1px solid var(--accent-dark);
+        }
+        
         .container {
-	max-width: 1000px;
-	margin: 20px auto;
-	padding: 20px;
-	background: #fff;
-	border-radius: 5px;
-	box-shadow: 0 0 10px rgba(0,0,0,0.1);
-	font-family: Constantia, "Lucida Bright", "DejaVu Serif", Georgia, serif;
-	color: #0A0808;
-	font-size: 20px;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--accent-dark);
+            position: relative;
+            overflow: hidden;
         }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent), var(--accent-dark));
+        }
+        
+        .intro-section {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+        }
+        
+        .intro-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent);
+            box-shadow: var(--glow);
+            margin: 1rem auto;
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--accent);
+            margin: 1.5rem 0 1rem;
+            text-align: center;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 10%;
+            width: 80%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .content-card {
+            background: rgba(10, 10, 31, 0.7);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--accent-dark);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 240, 255, 0.3);
+        }
+        
+        .card-title {
+            font-size: 1.3rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .card-title::before {
+            content: '▹';
+            color: var(--accent);
+        }
+        
         .controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            margin-top: 20px;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(0, 240, 255, 0.3);
         }
+        
         .btn {
-            padding: 10px 16px;
-            background: #333;
-            color: #fff;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+            color: var(--primary);
             border: none;
-            border-radius: 5px;
+            border-radius: 4px;
             cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        .btn:hover { background: #555; }
-        /* fixed back-to-top button */
+        
+        .btn:hover {
+            box-shadow: var(--glow);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(0, 240, 255, 0.1);
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .page-indicator {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
         #topBtn {
             position: fixed;
-            right: 18px;
-            bottom: 18px;
+            right: 2rem;
+            bottom: 2rem;
             display: none;
             z-index: 1000;
         }
-        .page-indicator {
-            font-size: 0.95rem;
-            color: #333;
-        }
-
-        /* new styles for layouts and previews */
-        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items:start; }
-        .gallery { display: grid; grid-template-columns: repeat(auto-fill,minmax(120px,1fr)); gap:10px; }
-        .thumb { width:100%; height:100px; object-fit:cover; border-radius:4px; display:block; }
-        .file-item { display:flex; align-items:center; gap:8px; padding:6px 0; border-bottom:1px solid #eee;}
-        .centered { text-align:center; }
-        .timeline { border-left:2px solid #eee; padding-left:12px; }
-        .meta { font-size:0.9rem; color:#666; margin-top:6px; }
-        .upload-row { margin-top:12px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-        .remove-btn { background:#c0392b; padding:6px 8px; border-radius:4px; color:#fff; border:none; cursor:pointer; }
-        @media(max-width:720px) { .two-col { grid-template-columns: 1fr; } }
-
+        
         /* Presentation overlay styles */
         #presentationOverlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.95);
+            background: rgba(5, 5, 15, 0.95);
             color: #fff;
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 2000;
         }
-        #presentationOverlay.active { display: flex; }
-        .slide-wrap { max-width: 1200px; width: 92%; height: 88%; background: transparent; display:flex; flex-direction:column; }
-        .slide-content { flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:30px; gap:18px; }
-        .slide-content h1 { font-size: clamp(28px, 5vw, 56px); margin:0; }
-        .slide-content p { font-size: clamp(16px, 2.2vw, 26px); line-height:1.3; max-width:1100px; }
-        .slide-files { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:8px; }
-        .slide-files img { max-height:320px; max-width:45vw; object-fit:cover; border-radius:6px; }
-
-        .pres-controls { display:flex; gap:10px; justify-content:center; margin-top:14px; }
-        .pres-counter { color:#ccc; font-size:0.95rem; margin-left:12px; align-self:center; }
-        .pres-btn { padding:10px 14px; border-radius:6px; border:none; cursor:pointer; background:#222; color:#fff; opacity:0.95; }
-        .pres-btn:hover { opacity:1; }
-        .pres-topbar { position:absolute; left:18px; top:18px; color:#fff; font-weight:600; }
-    body,td,th {
-	color: #EDE1E1;
-	text-align: center;
-}
-		#color{color:black;
-		}
+        
+        #presentationOverlay.active {
+            display: flex;
+        }
+        
+        .slide-wrap {
+            width: 90%;
+            height: 90%;
+            background: var(--card-bg);
+            border-radius: 8px;
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            gap: 1.5rem;
+        }
+        
+        .slide-content h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin: 0;
+            color: var(--accent);
+        }
+        
+        .slide-content p {
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            line-height: 1.6;
+            max-width: 900px;
+        }
+        
+        .slide-files {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+        
+        .slide-files img {
+            max-height: 300px;
+            max-width: 40%;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid var(--accent);
+        }
+        
+        .pres-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            padding: 1rem;
+            background: rgba(10, 10, 31, 0.8);
+            border-top: 1px solid var(--accent-dark);
+        }
+        
+        .pres-counter {
+            color: var(--accent);
+            font-size: 1rem;
+            margin-left: 1rem;
+            align-self: center;
+        }
+        
+        .pres-btn {
+            padding: 0.7rem 1.2rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        .pres-btn:hover {
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.7);
+        }
+        
+        .pres-topbar {
+            position: absolute;
+            left: 1.5rem;
+            top: 1.5rem;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .btn {
+                padding: 0.7rem 1.2rem;
+            }
+        }
     </style>
-<script src="https://puc.poecdn.net/authenticated_preview_page/syncedState.3f7572448765332f3047.js"></script><script src="https://puc.poecdn.net/authenticated_preview_page/syncedState.3f7572448765332f3047.js"></script></head>
+<script src="https://puc.poecdn.net/authenticated_preview_page/syncedState.3f7572448765332f3047.js"></script></head>
 <body>
 
 <header>
@@ -109,7 +394,7 @@
 </header>
 
 <div class="container" id="app">
-  <h2 id="page-title" style="font-size: 23px"><img src="hw_210727_21.jpeg" width="960" height="960" alt="">&nbsp;Intro&nbsp;~ </h2>
+  <h2 id="page-title" style="font-size: 23px"><img src="hw_210727_21.jpeg" width="960" height="960" alt=""/>&nbsp;Intro&nbsp;~ </h2>
   <p>_________________________________________________________________________________________&nbsp;</p>
   <h1>各位大家好 !&nbsp;&nbsp;</h1>
   <h1>以下即將會介紹 "社區介紹特色美食''</h1>
@@ -162,17 +447,16 @@
 
 
     <div class="controls">
-            <div>
-            <button class="btn" id="prevBtn">上一頁</button>
+        <div>
+            
             <button class="btn" id="nextBtn">下一頁</button>
-            <button class="btn" id="openPageBtn">開啟網頁</button>
            
-       </div>
+      </div>
         
     </div>
 </div>
 
-<button class="btn" id="topBtn" title="Back to top">Back to Top</button>
+<button class="btn" id="topBtn" title="回到頂部">回到頂部</button>
 
 <!-- presentation overlay (PowerPoint-like slide view) -->
 <div id="presentationOverlay" aria-hidden="true">
@@ -185,10 +469,10 @@
             <div class="slide-files" id="slideFiles"></div>
         </div>
         <div class="pres-controls">
-            <button class="pres-btn" id="presPrev">Prev</button>
-            <button class="pres-btn" id="presPlay">Play</button>
-            <button class="pres-btn" id="presNext">Next</button>
-            <button class="pres-btn" id="presExit">Exit</button>
+            <button class="pres-btn" id="presPrev">上一張</button>
+            <button class="pres-btn" id="presPlay">播放</button>
+            <button class="pres-btn" id="presNext">下一張</button>
+            <button class="pres-btn" id="presExit">退出</button>
             <div class="pres-counter" id="presCounter">1 / 10</div>
         </div>
     </div>
@@ -242,84 +526,18 @@
         let current = 0;
         const total = pages.length;
 
-        // ensure each page has externalURL (page2-10 default); first page kept empty
-        for (let i = 0; i < pages.length; i++) {
-            if (!pages[i].externalURL) {
-                pages[i].externalURL = (i === 0) ? '' : `https://example.com/page${i + 1}`;
-            }
-        }
-
         const titleEl = document.getElementById('page-title');
         const displayEl = document.getElementById('page-display');
         const indicator = document.getElementById('page-indicator');
         const nextBtn = document.getElementById('nextBtn');
-        let prevBtn = document.getElementById('prevBtn');
+        const prevBtn = document.getElementById('prevBtn');
         const topBtn = document.getElementById('topBtn');
+        const supportInput = document.getElementById('supportInput');
+        const fileInput = document.getElementById('fileInput');
+        const previews = document.getElementById('previews');
+        const saveNoteBtn = document.getElementById('saveNoteBtn');
+        const insertLongBtn = document.getElementById('insertLongBtn');
         const app = document.getElementById('app');
-
-        // create missing controls/elements so script doesn't throw (hidden if not needed)
-        if (!prevBtn) {
-            prevBtn = document.createElement('button');
-            prevBtn.id = 'prevBtn';
-            prevBtn.className = 'btn';
-            prevBtn.textContent = 'Prev Page';
-            nextBtn.parentNode.insertBefore(prevBtn, nextBtn);
-        }
-        let supportInput = document.getElementById('supportInput');
-        if (!supportInput) {
-            supportInput = document.createElement('textarea');
-            supportInput.id = 'supportInput';
-            supportInput.style.display = 'none';
-            app.appendChild(supportInput);
-        }
-        let fileInput = document.getElementById('fileInput');
-        if (!fileInput) {
-            fileInput = document.createElement('input');
-            fileInput.type = 'file';
-            fileInput.id = 'fileInput';
-            fileInput.multiple = true;
-            fileInput.style.display = 'none';
-            app.appendChild(fileInput);
-        }
-        let previews = document.getElementById('previews');
-        if (!previews) {
-            previews = document.createElement('div');
-            previews.id = 'previews';
-            app.appendChild(previews);
-        }
-        let saveNoteBtn = document.getElementById('saveNoteBtn');
-        if (!saveNoteBtn) {
-            saveNoteBtn = document.createElement('button');
-            saveNoteBtn.id = 'saveNoteBtn';
-            saveNoteBtn.style.display = 'none';
-            app.appendChild(saveNoteBtn);
-        }
-        let insertLongBtn = document.getElementById('insertLongBtn');
-        if (!insertLongBtn) {
-            insertLongBtn = document.createElement('button');
-            insertLongBtn.id = 'insertLongBtn';
-            insertLongBtn.style.display = 'none';
-            app.appendChild(insertLongBtn);
-        }
-        // presentBtn 和 autoplayCheckbox 會在檔案後方用 const 取得，這裡不再建立 DOM 元素
-
-        // add open page website button
-        let openPageBtn = document.getElementById('openPageBtn');
-        if (!openPageBtn) {
-            openPageBtn = document.createElement('button');
-            openPageBtn.id = 'openPageBtn';
-            openPageBtn.className = 'btn';
-            openPageBtn.textContent = 'Open Page Website';
-            nextBtn.parentNode.appendChild(openPageBtn);
-        }
-        openPageBtn.addEventListener('click', () => {
-            if (current === 0 || !pages[current].externalURL) {
-                alert('第1頁為保留頁面，無法開啟外部網站。');
-                return;
-            }
-            window.open(pages[current].externalURL, '_blank');
-        });
-
         // long sample text (replace with your preferred long introduction)
         const longSampleText = `Hello, my name is [Name]. I am [age] years old and my interests include computer science, coding, troubleshooting, research, digital communication, and creative projects. I use computers and digital tools every day to study, collaborate, and support others. I have experience with various software, document formats, image editing, and online presentation tools. I enjoy learning new technologies and applying them to solve problems and build useful systems. This long text is provided so you can quickly fill the introduction area for testing or demonstration purposes. Feel free to edit any part of it to reflect your personal details.`;
 
@@ -330,8 +548,8 @@
                 // append with spacing if there is existing text
                 supportInput.value = current ? (current + '\n\n' + longSampleText) : longSampleText;
                 // small visual feedback
-                insertLongBtn.textContent = 'Inserted';
-                setTimeout(()=> insertLongBtn.textContent = 'Insert long text', 900);
+                insertLongBtn.textContent = '已插入';
+                setTimeout(()=> insertLongBtn.textContent = '插入長文本', 900);
             });
         }
 
@@ -433,9 +651,6 @@
             titleEl.textContent = `${pg.title}`;
             indicator.textContent = `Page ${idx+1} of ${total}`;
 
-            // show/hide open page button: page1 is held, pages 2-10 can open external site
-            if (openPageBtn) openPageBtn.style.display = (idx === 0) ? 'none' : 'inline-block';
-
             // choose a layout variant (5 variants)
             const variant = idx % 5;
             const filesHtml = buildFilesHtml(pg.files || []);
@@ -490,14 +705,16 @@
         });
 
         // Save note explicitly
-        saveNoteBtn.addEventListener('click', () => {
-            pages[current].note = supportInput.value;
-            savePagesToStorage();
-            // quick feedback
-            const prev = saveNoteBtn.textContent;
-            saveNoteBtn.textContent = 'Saved';
-            setTimeout(()=> saveNoteBtn.textContent = prev, 900);
-        });
+        if (saveNoteBtn) {
+            saveNoteBtn.addEventListener('click', () => {
+                pages[current].note = supportInput.value;
+                savePagesToStorage();
+                // quick feedback
+                const prev = saveNoteBtn.textContent;
+                saveNoteBtn.textContent = '已儲存';
+                setTimeout(()=> saveNoteBtn.textContent = prev, 900);
+            });
+        }
 
         // navigation
         nextBtn.addEventListener('click', () => {
@@ -587,11 +804,11 @@
             presInterval = setInterval(() => {
                 nextSlide();
             }, 4000);
-            presPlay.textContent = 'Pause';
+            presPlay.textContent = '暫停';
         }
         function stopAutoPlay() {
             if (presInterval) { clearInterval(presInterval); presInterval = null; }
-            presPlay.textContent = 'Play';
+            presPlay.textContent = '播放';
         }
 
         // Wire presentation controls
@@ -638,4 +855,4 @@
     })();
 </script>
 
-</div></body></html>
+</body></html>
